@@ -1,5 +1,5 @@
 #use Udacity Neural Network chapter, lesson 9,  15. Deep Neural Network tutorial
-# Solution is available in the other "solution.py" tab
+# one hidden layer with Relu
 import tensorflow as tf
 
 output = None
