@@ -10,21 +10,24 @@ from __future__ import print_function
 import argparse
 import sys
 
-from tensorflow.example.tutorials.mnist import input_data
+from tensorflow.examples.tutorials.mnist import input_data
 
 import tensorflow as tf
 
 FLAGS = None
 
+
 def main(_):
-    #import data
-    mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot = True)
+    # Import data
+    mnist = input_data.read_data_sets("/Users/jinzhu/CMUGoogleDrive/2018\ winter/UdacityDeepLearning/TensorFlow/TensorFlowTutorial/MNIST_data", one_hot=True)
 
     #Create the model
     x = tf.placeholder(tf.float32, [None, 784])
     W = tf.Variable(tf.zeros([784, 10]))
     b = tf.Variable(tf.zeros([10]))
     y = tf.matmul(x, W) + b
+
+    print ("model created")
 
     # Define loss an optimizer
     y_ = tf.placeholder(tf.float32, [None,  10])
@@ -50,7 +53,7 @@ def main(_):
     sess = tf.InteractiveSession()
 
     tf.global_variables_initializer().run()
-
+    print("start training")
     #Train
     for _ in range(1000):
         batch_xs, batch_ys = mnist.train.next_batch(100)
@@ -60,18 +63,9 @@ def main(_):
     correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     print(sess.run(accuracy, feed_dict={x:mnist.test.images, y_:mnist.test.labels}))
+if __name__ == '__main__':
 
-    if __name__ == '__main__':
-        parser = argparse.ArgumentParser()
-        #information for help
-        parser.add_argument('--data_dir', type=str, default='/tmp/tensorflow/mnist/input_data',
-                            help='Directory for storing input data')
-        #Sometimes a script may only parse a few of the command-line arguments, passing the remaining arguments on to
-        # another script or program.
-        # In these cases, the parse_known_args() method can be useful.
-        # It works much like parse_args() except that it does not produce an error when extra arguments are present.
-        FLAGS, unparsed = parser.parse_known_args()
-        tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
+    tf.app.run(main=main)
 
 
 
