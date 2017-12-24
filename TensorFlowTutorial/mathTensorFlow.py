@@ -18,3 +18,4 @@ a = tf.subtract(tf.cast(tf.constant(2.0), tf.int32), tf.constant(1))
 with tf.Session() as sess:
     output = sess.run(a)
     print(output)
+
