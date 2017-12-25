@@ -1,7 +1,15 @@
 import numpy as np
 
 print("binomial")
-print(np.random.binomial(5, 0.3, (10,10)))
+n, p = 10, .5 # number of trials, probability of each trial
+s = np.random.binomial(n, p, 5)
+# result of flipping a coin 10 times, tested 1000 times.
+print(s)
+# numpy.random.binomial   draw samples from a binomial distribution
+# p: probability of success = 0.1
+# n: number of trials = 5
+# random binomial return samples with values all integers in [0,n]
+print(np.random.binomial(5, 0.1, (10,10)))
 X = np.array([[0,0,1],[0,1,1],[1,0,1],[1,1,1]])
 y = np.array([[0,1,1,0]]).T
 #learning rate
@@ -27,18 +35,29 @@ print("W_1: ")
 print(W_1)
 # do 100 iterations of forward and backward propagations
 for j in range(2):
+    # layer_1 = sigmoid(X*W_0)
     layer_1 = (1/(1+np.exp(-(np.dot(X,W_0)))))
     print ("layer_1")
     print (layer_1)
     # only do dropout during training , not testing
     # to perform dropout on a layer , you randomly set some of the layer's values to 0 during forward propagation
     if(do_dropout):
+        # forward:
 
+        # [np.ones((len(X), hidden_dim))]: apply binomial distribution to ones
+        # u1 = np.random.binomial(1, p)/p
+        # h1 *= u1     make the expectation of the output to be x instead of xp, since we scaled it back with 1/p
+        # scaling :   1/p = (1.0 / (1 - dropout_percent))
+        # success rate = 1 - dropout_percent
         layer_1 *= np.random.binomial([np.ones((len(X), hidden_dim))], 1 - dropout_percent)[0] * (1.0 / (1 - dropout_percent))
         print("new layer_1")
         print(layer_1)
+    # no drop out at the 2nd layer
     layer_2 = 1 / (1 + np.exp(-(np.dot(layer_1, W_1))))
+    # Gradient dE/dw for each layer
+    # derivative of sigmoid(layer_2) is  (layer_2 * (1 - layer_2))
     layer_2_delta = (layer_2 - y) * (layer_2 * (1 - layer_2))
     layer_1_delta = layer_2_delta.dot(W_1.T) * (layer_1 * (1 - layer_1))
+    # backprop: gradient descent
     W_1 -= (alpha * layer_1.T.dot(layer_2_delta))
     W_0 -= (alpha * X.T.dot(layer_1_delta))
